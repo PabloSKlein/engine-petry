@@ -27,9 +27,14 @@ public class Lugar extends Transicionavel {
         return this.tokens;
     }
 
-    public void removeTokens(int toRemove) {
-        if (toRemove > tokens) throw new RuntimeException();
-        tokens -= toRemove;
+    public void removeTokens(int valor) {
+        if (valor > tokens) throw new RuntimeException();
+        tokens -= valor;
+    }
+
+    public void adicionaTokens(int valor) {
+        if (valor < 0) throw new RuntimeException();
+        tokens += valor;
     }
 
     public String getId() {

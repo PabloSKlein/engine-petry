@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.unisinos.enginepetry.model.TipoConexaoEnum.CONSUMO;
+import static com.unisinos.enginepetry.model.TipoConexaoEnum.GERACAO;
+
 public class RedePetry {
     private final List<Lugar> lugares = new ArrayList<>();
     private final List<Conexao> conexoes = new ArrayList<>();
@@ -18,7 +21,13 @@ public class RedePetry {
     }
 
     public void adicionarConexao(int valor, TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
-        conexoes.add(new Conexao(valor, tipoConexao, buscaLugar(idLugar), buscaTransicao(idTransicao)));
+        var lugar = buscaLugar(idLugar);
+        var transicao = buscaTransicao(idTransicao);
+        var conexao = new Conexao(valor, tipoConexao, lugar, transicao);
+
+        conexoes.add(conexao);
+        transicao.adicionaConexao(conexao);
+        lugar.adicionaConexao(conexao);
     }
 
     public void adicionarConexao(TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
@@ -28,8 +37,8 @@ public class RedePetry {
     ///teste
     public List<Conexao> getConexoesPossiveis() {
         return conexoes.stream()
-                .filter(conexao -> conexao.getTipoConexao() == TipoConexaoEnum.CONSUMO
-                         && conexao.getValor() <= conexao.getOrigem().getTokens())
+                .filter(conexao -> conexao.getTipoConexao() == CONSUMO
+                        && conexao.getValor() <= conexao.getOrigem().getTokens())
                 .collect(Collectors.toList());
     }
 
@@ -50,6 +59,33 @@ public class RedePetry {
     public String getRedeString() {
         return "Lugares: " + lugares.stream().map(Lugar::getId).collect(Collectors.joining(";"))
                 + "\n Transicoes: " + transicoes.stream().map(Transicao::getId).collect(Collectors.joining(";"))
-                + "\n Conexoes: " + conexoes.stream().map(Conexao::getId).collect(Collectors.joining(";")) ;
+                + "\n Conexoes: " + conexoes.stream().map(Conexao::getId).collect(Collectors.joining(";"));
+    }
+
+    public void executaTransicao(String idTransicao) {
+        var conexoesDaTransicao = buscaTransicao(idTransicao).getConexoes();
+
+        if (todasConexoesDeConsumoPossuemOsTokensNecessarios(conexoesDaTransicao)) {
+            consomeTokens(conexoesDaTransicao);
+            geraTokens(conexoesDaTransicao);
+        }
+    }
+
+    private void consomeTokens(List<Conexao> conexoes) {
+        conexoes.stream()
+                .filter(it -> it.getTipoConexao() == CONSUMO)
+                .forEach(it -> it.getlugar().removeTokens(it.getValor()));
+    }
+
+    private void geraTokens(List<Conexao> conexoes) {
+        conexoes.stream()
+                .filter(it -> it.getTipoConexao() == GERACAO)
+                .forEach(it -> it.getlugar().adicionaTokens(it.getValor()));
+    }
+
+    private boolean todasConexoesDeConsumoPossuemOsTokensNecessarios(List<Conexao> conexoes) {
+        return conexoes.stream()
+                .filter(it -> it.getTipoConexao() == CONSUMO)
+                .allMatch(it -> it.getValor() <= it.getOrigem().getTokens());
     }
 }

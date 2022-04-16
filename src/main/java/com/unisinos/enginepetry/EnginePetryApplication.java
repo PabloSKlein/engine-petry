@@ -25,6 +25,8 @@ public class EnginePetryApplication {
         redePetry.adicionarConexao(1, GERACAO, "L2", "T1");
 
         System.out.println(redePetry.getRedeString());
+
+        redePetry.executaTransicao("1");
     }
 
 }

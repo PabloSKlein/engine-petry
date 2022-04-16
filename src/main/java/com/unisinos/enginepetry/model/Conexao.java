@@ -55,4 +55,12 @@ public class Conexao implements ComponentePetry {
     public Transicionavel getDestino() {
         return tipoConexao == CONSUMO ? transicao : lugar;
     }
+
+    public Lugar getlugar() {
+        return lugar;
+    }
+
+    public Transicao getTransicao() {
+        return transicao;
+    }
 }
