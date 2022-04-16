@@ -38,7 +38,7 @@ public class RedePetry {
     public List<Conexao> getConexoesPossiveis() {
         return conexoes.stream()
                 .filter(conexao -> conexao.getTipoConexao() == CONSUMO
-                        && conexao.getValor() <= conexao.getOrigem().getTokens())
+                        && conexao.getPeso() <= conexao.getOrigem().getTokens())
                 .collect(Collectors.toList());
     }
 
@@ -57,7 +57,7 @@ public class RedePetry {
     }
 
     public String getRedeString() {
-        return "Lugares: " + lugares.stream().map(Lugar::getId).collect(Collectors.joining(";"))
+        return "Lugares: " + lugares.stream().map(it -> it.getId() + " Tokens:" + it.getTokens()).collect(Collectors.joining(";"))
                 + "\n Transicoes: " + transicoes.stream().map(Transicao::getId).collect(Collectors.joining(";"))
                 + "\n Conexoes: " + conexoes.stream().map(Conexao::getId).collect(Collectors.joining(";"));
     }
@@ -74,18 +74,18 @@ public class RedePetry {
     private void consomeTokens(List<Conexao> conexoes) {
         conexoes.stream()
                 .filter(it -> it.getTipoConexao() == CONSUMO)
-                .forEach(it -> it.getlugar().removeTokens(it.getValor()));
+                .forEach(it -> it.getlugar().removeTokens(it.getPeso()));
     }
 
     private void geraTokens(List<Conexao> conexoes) {
         conexoes.stream()
                 .filter(it -> it.getTipoConexao() == GERACAO)
-                .forEach(it -> it.getlugar().adicionaTokens(it.getValor()));
+                .forEach(it -> it.getlugar().adicionaTokens(it.getPeso()));
     }
 
     private boolean todasConexoesDeConsumoPossuemOsTokensNecessarios(List<Conexao> conexoes) {
         return conexoes.stream()
                 .filter(it -> it.getTipoConexao() == CONSUMO)
-                .allMatch(it -> it.getValor() <= it.getOrigem().getTokens());
+                .allMatch(it -> it.getPeso() <= it.getOrigem().getTokens());
     }
 }

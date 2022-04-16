@@ -13,8 +13,8 @@ public class EnginePetryApplication {
 
     public static void main(String[] args) {
         var redePetry = new RedePetry();
-        //L 1 0
-        redePetry.adicionarLugar(new Lugar("1", 0));
+        //L 1 1
+        redePetry.adicionarLugar(new Lugar("1", 1));
         //T 1
         redePetry.adicionarTransicao(new Transicao("1"));
         //L 2 0
@@ -26,7 +26,9 @@ public class EnginePetryApplication {
 
         System.out.println(redePetry.getRedeString());
 
-        redePetry.executaTransicao("1");
+        redePetry.executaTransicao("T1");
+
+        System.out.println(redePetry.getRedeString());
     }
 
 }

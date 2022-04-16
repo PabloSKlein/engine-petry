@@ -6,21 +6,21 @@ import static com.unisinos.enginepetry.model.TipoConexaoEnum.CONSUMO;
 public class Conexao implements ComponentePetry {
     private static final String PREFIXO = "C";
 
-    private int valor;
+    private int peso;
     private final TipoConexaoEnum tipoConexao;
     private final Lugar lugar;
     private final Transicao transicao;
 
-    public Conexao(int valor, TipoConexaoEnum tipoConexao, Lugar lugar, Transicao transicao) {
-        if (valor < 1) throw new RuntimeException();
-        this.valor = valor;
+    public Conexao(int peso, TipoConexaoEnum tipoConexao, Lugar lugar, Transicao transicao) {
+        if (peso < 1) throw new RuntimeException();
+        this.peso = peso;
         this.tipoConexao = tipoConexao;
         this.lugar = lugar;
         this.transicao = transicao;
     }
 
     public Conexao(TipoConexaoEnum tipoConexao, Lugar lugar, Transicao transicao) {
-        this.valor = 1;
+        this.peso = 1;
         this.tipoConexao = tipoConexao;
         this.lugar = lugar;
         this.transicao = transicao;
@@ -33,15 +33,15 @@ public class Conexao implements ComponentePetry {
 
     @Override
     public String getId() {
-        return PREFIXO + " -> ORIGEM:" + getOrigem().getId() + " DESTINO:" + getDestino().getId() + " VALOR:" + getValor();
+        return PREFIXO + " -> ORIGEM:" + getOrigem().getId() + " DESTINO:" + getDestino().getId() + " VALOR:" + getPeso();
     }
 
-    public int getValor() {
-        return valor;
+    public int getPeso() {
+        return peso;
     }
 
-    public void setValor(int valor) {
-        this.valor = valor;
+    public void setPeso(int peso) {
+        this.peso = peso;
     }
 
     public TipoConexaoEnum getTipoConexao() {
