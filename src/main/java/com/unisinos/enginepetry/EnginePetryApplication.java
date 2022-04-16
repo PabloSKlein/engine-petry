@@ -23,6 +23,8 @@ public class EnginePetryApplication {
         redePetry.adicionarConexao(1, CONSUMO, "L1", "T1");
         //C G T1 L2
         redePetry.adicionarConexao(1, GERACAO, "L2", "T1");
+
+        System.out.println(redePetry.getRedeString());
     }
 
 }

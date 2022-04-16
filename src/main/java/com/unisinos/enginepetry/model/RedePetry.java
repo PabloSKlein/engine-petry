@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 public class RedePetry {
     private final List<Lugar> lugares = new ArrayList<>();
     private final List<Conexao> conexoes = new ArrayList<>();
-    private final List<Transicao> tansicoes = new ArrayList<>();
+    private final List<Transicao> transicoes = new ArrayList<>();
 
     public void adicionarLugar(Lugar lugar) {
         lugares.add(lugar);
     }
 
     public void adicionarTransicao(Transicao transicao) {
-        tansicoes.add(transicao);
+        transicoes.add(transicao);
     }
 
     public void adicionarConexao(int valor, TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
@@ -25,9 +25,7 @@ public class RedePetry {
         adicionarConexao(1, tipoConexao, idLugar, idTransicao);
     }
 
-
     ///teste
-
     public List<Conexao> getConexoesPossiveis() {
         return conexoes.stream()
                 .filter(conexao -> conexao.getTipoConexao() == TipoConexaoEnum.CONSUMO
@@ -36,7 +34,7 @@ public class RedePetry {
     }
 
     private Transicao buscaTransicao(String idTransicao) {
-        return tansicoes.stream()
+        return transicoes.stream()
                 .filter(lugar -> lugar.getId().equals(idTransicao))
                 .findAny()
                 .orElseThrow(RuntimeException::new);
@@ -47,5 +45,11 @@ public class RedePetry {
                 .filter(lugar -> lugar.getId().equals(idLugar))
                 .findAny()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public String getRedeString() {
+        return "Lugares: " + lugares.stream().map(Lugar::getId).collect(Collectors.joining(";"))
+                + "\n Transicoes: " + transicoes.stream().map(Transicao::getId).collect(Collectors.joining(";"))
+                + "\n Conexoes: " + conexoes.stream().map(Conexao::getId).collect(Collectors.joining(";")) ;
     }
 }

@@ -33,7 +33,7 @@ public class Conexao implements ComponentePetry {
 
     @Override
     public String getId() {
-        return PREFIXO + getOrigem().getId() + getDestino().getId();
+        return PREFIXO + " -> ORIGEM:" + getOrigem().getId() + " DESTINO:" + getDestino().getId() + " VALOR:" + getValor();
     }
 
     public int getValor() {
@@ -48,11 +48,11 @@ public class Conexao implements ComponentePetry {
         return tipoConexao;
     }
 
-    public Transicionavel getOrigem(){
+    public Transicionavel getOrigem() {
         return tipoConexao == CONSUMO ? lugar : transicao;
     }
 
-    public Transicionavel getDestino(){
+    public Transicionavel getDestino() {
         return tipoConexao == CONSUMO ? transicao : lugar;
     }
 }
