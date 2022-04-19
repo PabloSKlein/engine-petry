@@ -95,8 +95,8 @@ public class EnginePetryApplication {
 //		redePetry.adicionarConexao(1, GERACAO, "L4", "T3");
 //
 //		redePetry.start();
-
-		RedePetry rede = new EnginePetryApplication().carregarRedeDeArquivo("C:\\_DEV\\_CCF\\engine-petry\\src\\main\\resources\\Entrada\\RedePetry.txt");
+		//Arquivo de entrada esta em main->resources->Entrada->RedePetry.txt
+		RedePetry rede = new EnginePetryApplication().carregarRedeDeArquivo(".....src\\main\\resources\\Entrada\\RedePetry.txt");
 		rede.start();
 	}
 
