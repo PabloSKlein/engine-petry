@@ -58,14 +58,23 @@ public class RedePetry {
 	}
 
 	public void adicionarLugar(Lugar lugar) {
+		if(buscaLugar(lugar.getId()) == null) {
+			throw new RuntimeException();
+		}
 		lugares.add(lugar);
 	}
 
 	public void adicionarTransicao(Transicao transicao) {
+		if (buscaTransicao(transicao.getId()) == null) {
+			throw new RuntimeException();
+		}
 		transicoes.add(transicao);
 	}
 
 	public void adicionarConexao(int valor, TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
+		if(buscaConexao(idLugar, idTransicao)) {
+			throw new RuntimeException();
+		}
 		var lugar = buscaLugar(idLugar);
 		var transicao = buscaTransicao(idTransicao);
 		var conexao = new Conexao(valor, tipoConexao, lugar, transicao);
@@ -79,17 +88,20 @@ public class RedePetry {
 		adicionarConexao(1, tipoConexao, idLugar, idTransicao);
 	}
 
-	/// teste
 	public List<Conexao> getConexoesPossiveis() {
 		return conexoes.stream().filter(conexao -> conexao.getTipoConexao() == CONSUMO && conexao.getPeso() <= conexao.getOrigem().getTokens()).collect(Collectors.toList());
 	}
 
 	private Transicao buscaTransicao(String idTransicao) {
-		return transicoes.stream().filter(lugar -> lugar.getId().equals(idTransicao)).findAny().orElseThrow(RuntimeException::new);
+		return transicoes.stream().filter(lugar -> lugar.getId().equals(idTransicao)).findAny().orElse(null);
 	}
 
 	private Lugar buscaLugar(String idLugar) {
-		return lugares.stream().filter(lugar -> lugar.getId().equals(idLugar)).findAny().orElseThrow(RuntimeException::new);
+		return lugares.stream().filter(lugar -> lugar.getId().equals(idLugar)).findAny().orElse(null);
+	}
+	
+	private boolean buscaConexao(String idLugar, String idTransicao) {
+		return conexoes.stream().allMatch(c -> c.getlugar().getId().equals(idLugar) && c.getTransicao().getId().equals(idTransicao));
 	}
 
 	public String getRedeString() {
