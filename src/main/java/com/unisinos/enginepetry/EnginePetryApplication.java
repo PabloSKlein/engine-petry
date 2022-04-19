@@ -11,6 +11,8 @@ import static com.unisinos.enginepetry.model.TipoConexaoEnum.GERACAO;
 @SpringBootApplication
 public class EnginePetryApplication {
 
+
+	
     public static void main(String[] args) {
         var redePetry = new RedePetry();
         //L 1 1
@@ -31,4 +33,19 @@ public class EnginePetryApplication {
         System.out.println(redePetry.getRedeString());
     }
 
+    
+    /**
+     * -> Definição de Padrão do arquivo
+     * -> Leitura do Arquivo (colocar marcas)
+     * -> Montagem da Rede - OK
+     * -> Scanner da rede
+     * -> Execução do ciclo (executa as transições ativas no scanner da rede)
+     * -> Resolução da concorrência
+     * -> 
+     * 
+     * 
+     * 
+     */
+    
+    
 }
