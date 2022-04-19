@@ -3,22 +3,69 @@ package com.unisinos.enginepetry.model;
 import static com.unisinos.enginepetry.model.TipoConexaoEnum.CONSUMO;
 import static com.unisinos.enginepetry.model.TipoConexaoEnum.GERACAO;
 
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.swing.JFrame;
+import javax.swing.JTextArea;
+
 public class RedePetry {
+	private int cicloAtual = 0;
 	private final List<Lugar> lugares = new ArrayList<>();
 	private final List<Conexao> conexoes = new ArrayList<>();
 	private final List<Transicao> transicoes = new ArrayList<>();
+	JTextArea textArea;
+
+	private class MKeyListener extends KeyAdapter {
+
+		@Override
+		public void keyPressed(KeyEvent event) {
+			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				System.exit(0);
+			}
+
+			if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+
+				executaCiclo();
+				textArea.append("\n\n" + getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
+			}
+		}
+	}
+
+	public void start() {
+		textArea = new JTextArea();
+
+		textArea.addKeyListener(new MKeyListener());
+		textArea.setEditable(false);
+
+		textArea.setText(getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
+
+		JFrame jframe = new JFrame();
+
+		jframe.add(textArea);
+
+		jframe.setSize(800, 600);
+		jframe.revalidate();
+		jframe.repaint();
+
+		jframe.setVisible(true);
+
+	}
 
 	public void adicionarLugar(Lugar lugar) {
+		if (buscaLugar(lugar.getId()) != null) {
+			throw new RuntimeException();
+		}
 		lugares.add(lugar);
 	}
 
 	public void adicionarTransicao(Transicao transicao) {
+		if (buscaTransicao(transicao.getId()) != null) {
+			throw new RuntimeException();
+		}
 		transicoes.add(transicao);
 	}
 
@@ -27,6 +74,9 @@ public class RedePetry {
 	}
 
 	public void adicionarConexao(int valor, TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
+		if (buscaConexao(idLugar, idTransicao, tipoConexao)) {
+			throw new RuntimeException();
+		}
 		var lugar = buscaLugar(idLugar);
 		var transicao = buscaTransicao(idTransicao);
 		var conexao = new Conexao(valor, tipoConexao, lugar, transicao);
@@ -40,18 +90,20 @@ public class RedePetry {
 		adicionarConexao(1, tipoConexao, idLugar, idTransicao);
 	}
 
-	/// teste
 	public List<Conexao> getConexoesPossiveis() {
 		return conexoes.stream().filter(conexao -> conexao.getTipoConexao() == CONSUMO && conexao.getPeso() <= conexao.getOrigem().getTokens()).collect(Collectors.toList());
 	}
 
 	private Transicao buscaTransicao(String idTransicao) {
-		return transicoes.stream().filter(lugar -> lugar.getId().equals(idTransicao)).findAny().orElseThrow(RuntimeException::new);
+		return transicoes.stream().filter(lugar -> lugar.getId().equals(idTransicao)).findAny().orElse(null);
 	}
 
 	private Lugar buscaLugar(String idLugar) {
-		lugares.forEach(l -> System.out.println(l.getId()));
-		return lugares.stream().filter(lugar -> lugar.getId().equals(idLugar)).findAny().orElseThrow(RuntimeException::new);
+		return lugares.stream().filter(lugar -> lugar.getId().equals(idLugar)).findAny().orElse(null);
+	}
+
+	private boolean buscaConexao(String idLugar, String idTransicao, TipoConexaoEnum tipo) {
+		return conexoes.stream().anyMatch(c -> c.getlugar().getId().equals(idLugar) && c.getTransicao().getId().equals(idTransicao) && c.getTipoConexao() == tipo);
 	}
 
 	public String getRedeString() {
@@ -64,8 +116,11 @@ public class RedePetry {
 		var conexoesDaTransicao = buscaTransicao(idTransicao).getConexoes();
 
 		if (todasConexoesDeConsumoPossuemOsTokensNecessarios(conexoesDaTransicao)) {
+			System.out.println("TRANSIÇÃO EXECUTADA:" + idTransicao);
 			consomeTokens(conexoesDaTransicao);
 			geraTokens(conexoesDaTransicao);
+		} else {
+			System.out.println("TRANSIÇÃO NÃO EXECUTADA:" + idTransicao);
 		}
 	}
 
@@ -79,6 +134,16 @@ public class RedePetry {
 
 	private boolean todasConexoesDeConsumoPossuemOsTokensNecessarios(List<Conexao> conexoes) {
 		return conexoes.stream().filter(it -> it.getTipoConexao() == CONSUMO).allMatch(it -> it.getPeso() <= it.getOrigem().getTokens());
+	}
+
+	public void executaCiclo() {
+		List<Transicao> ativas = buscaTransicoesAtivas();
+		for (Transicao transicao : ativas) {
+			System.out.println("ATIVA:" + transicao.getId());
+			executaTransicao(transicao.getId());
+		}
+		System.out.println("Ciclo:" + cicloAtual);
+		cicloAtual++;
 	}
 
 	private List<Transicao> buscaTransicoesAtivas() {
