@@ -22,6 +22,10 @@ public class RedePetry {
 		transicoes.add(transicao);
 	}
 
+	public void adicionarTokens(String idLugar, int quantidadeTokens) {
+		buscaLugar(idLugar).adicionaTokens(quantidadeTokens);
+	}
+
 	public void adicionarConexao(int valor, TipoConexaoEnum tipoConexao, String idLugar, String idTransicao) {
 		var lugar = buscaLugar(idLugar);
 		var transicao = buscaTransicao(idTransicao);
@@ -46,6 +50,7 @@ public class RedePetry {
 	}
 
 	private Lugar buscaLugar(String idLugar) {
+		lugares.forEach(l -> System.out.println(l.getId()));
 		return lugares.stream().filter(lugar -> lugar.getId().equals(idLugar)).findAny().orElseThrow(RuntimeException::new);
 	}
 
@@ -84,16 +89,6 @@ public class RedePetry {
 			}
 		}
 		return resultado;
-	}
-
-	public void carregarRedeDeArquivo(String pathFile) {
-		File fileIn = new File(pathFile);
-		try {
-			List<String> lines = Util.loadLinesBuffer(fileIn, "UTF-8");
-
-		} catch (IOException e) {
-			throw new RuntimeException();
-		}
 	}
 
 }
