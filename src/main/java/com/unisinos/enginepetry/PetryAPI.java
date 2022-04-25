@@ -11,8 +11,7 @@ public class PetryAPI {
 
 	@GetMapping(path = "/ciclo", produces = MediaType.TEXT_PLAIN_VALUE)
 	public String ciclo() {
-		EnginepetryApplication.rede.executaCiclo();
-		return "FOI";
+		return EnginepetryApplication.rede.executaCiclo();
 	}
 
 }

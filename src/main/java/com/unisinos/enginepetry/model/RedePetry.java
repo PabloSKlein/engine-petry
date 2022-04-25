@@ -3,57 +3,44 @@ package com.unisinos.enginepetry.model;
 import static com.unisinos.enginepetry.model.TipoConexaoEnum.CONSUMO;
 import static com.unisinos.enginepetry.model.TipoConexaoEnum.GERACAO;
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
 
 public class RedePetry {
 	private int cicloAtual = 0;
 	private final List<Lugar> lugares = new ArrayList<>();
 	private final List<Conexao> conexoes = new ArrayList<>();
 	private final List<Transicao> transicoes = new ArrayList<>();
-	JTextArea textArea;
+	private StringBuilder log;
 
-//	private class MKeyListener extends KeyAdapter {
-//
-//		@Override
-//		public void keyPressed(KeyEvent event) {
-//			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
-//				System.exit(0);
-//			}
-//
-//			if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-//
-//				executaCiclo();
-//				textArea.append("\n\n" + getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
-//			}
+	public RedePetry() {
+		log = new StringBuilder();
+	}
+
+	public StringBuilder getLog() {
+		return log;
+	}
+
+	private void criarLinhaLog() {
+//		String lugares = "";
+//		for (Lugar lugar : this.lugares) {
+//			lugares += lugar.getId() + " \t";
 //		}
-//	}
-
-//	public void start() {
-//		textArea = new JTextArea();
-//
-//		textArea.addKeyListener(new MKeyListener());
-//		textArea.setEditable(false);
-//
-//		textArea.setText(getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
-//
-//		JFrame jframe = new JFrame();
-//
-//		jframe.add(textArea);
-//
-//		jframe.setSize(800, 600);
-//		jframe.revalidate();
-//		jframe.repaint();
-//
-//		jframe.setVisible(true);
-//
-//	}
+//		String trans = "";
+//		for (Transicao tran : this.transicoes) {
+//			trans += tran.getId() + " \t";
+//		}
+		String lugares = "";
+		for (Lugar lugar : this.lugares) {
+			lugares += lugar.getTokens() + " \t";
+		}
+		String trans = "";
+		for (Transicao tran : this.transicoes) {
+			trans += tran.getId() + " \t";
+		}
+		this.log.append(cicloAtual + "\t" + lugares + trans + "\n");
+	}
 
 	public void adicionarLugar(Lugar lugar) {
 		if (buscaLugar(lugar.getId()) != null) {
@@ -136,14 +123,16 @@ public class RedePetry {
 		return conexoes.stream().filter(it -> it.getTipoConexao() == CONSUMO).allMatch(it -> it.getPeso() <= it.getOrigem().getTokens());
 	}
 
-	public void executaCiclo() {
+	public String executaCiclo() {
 		List<Transicao> ativas = buscaTransicoesAtivas();
 		for (Transicao transicao : ativas) {
 			System.out.println("ATIVA:" + transicao.getId());
 			executaTransicao(transicao.getId());
 		}
+		criarLinhaLog();
 		System.out.println("Ciclo:" + cicloAtual);
 		cicloAtual++;
+		return this.log.toString();
 	}
 
 	private List<Transicao> buscaTransicoesAtivas() {
