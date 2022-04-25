@@ -62,7 +62,7 @@ public class EnginepetryApplication {
 	}
 
 	public static void main(String[] args) {
-		rede = carregarRedeDeArquivo("C:\\_DEV\\_CCF\\engine-petry\\src\\main\\resources\\Entrada\\RedePetry.txt");
+		rede = carregarRedeDeArquivo("C:\\_DEV\\_CCF\\enginepetry\\src\\main\\resources\\static\\RedePetry.txt");
 		SpringApplication.run(EnginepetryApplication.class, args);
 	}
 
