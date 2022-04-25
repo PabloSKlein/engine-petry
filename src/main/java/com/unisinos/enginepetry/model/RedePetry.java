@@ -1,9 +1,7 @@
 package com.unisinos.enginepetry.model;
 
-import static com.unisinos.enginepetry.model.TipoConexaoEnum.CONSUMO;
-import static com.unisinos.enginepetry.model.TipoConexaoEnum.GERACAO;
-
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +14,15 @@ public class RedePetry {
 
 	public RedePetry() {
 		log = new StringBuilder();
+		String lugares = "";
+		for (Lugar lugar : buscaLugaresEmOrdemAlfabetica()) {
+			lugares += lugar.getId() + " \t";
+		}
+		String trans = "";
+		for (Transicao tran : buscaTransicaoEmOrdemAlfabetica()) {
+			trans += tran.getId() + " \t";
+		}
+		this.log.append(cicloAtual + "\t" + lugares + trans + "\n");
 	}
 
 	public StringBuilder getLog() {
@@ -23,21 +30,15 @@ public class RedePetry {
 	}
 
 	private void criarLinhaLog() {
-//		String lugares = "";
-//		for (Lugar lugar : this.lugares) {
-//			lugares += lugar.getId() + " \t";
-//		}
-//		String trans = "";
-//		for (Transicao tran : this.transicoes) {
-//			trans += tran.getId() + " \t";
-//		}
+
 		String lugares = "";
-		for (Lugar lugar : this.lugares) {
+		for (Lugar lugar : buscaLugaresEmOrdemAlfabetica()) {
 			lugares += lugar.getTokens() + " \t";
 		}
 		String trans = "";
-		for (Transicao tran : this.transicoes) {
-			trans += tran.getId() + " \t";
+		for (Transicao tran : buscaTransicaoEmOrdemAlfabetica()) {
+			boolean ativa = todasConexoesDeConsumoPossuemOsTokensNecessarios(tran.getConexoes());
+			trans += ativa + " \t";
 		}
 		this.log.append(cicloAtual + "\t" + lugares + trans + "\n");
 	}
@@ -78,7 +79,8 @@ public class RedePetry {
 	}
 
 	public List<Conexao> getConexoesPossiveis() {
-		return conexoes.stream().filter(conexao -> conexao.getTipoConexao() == CONSUMO && conexao.getPeso() <= conexao.getOrigem().getTokens()).collect(Collectors.toList());
+		return conexoes.stream().filter(conexao -> conexao.getTipoConexao() == TipoConexaoEnum.CONSUMO && conexao.getPeso() <= conexao.getOrigem().getTokens())
+				.collect(Collectors.toList());
 	}
 
 	private Transicao buscaTransicao(String idTransicao) {
@@ -112,15 +114,15 @@ public class RedePetry {
 	}
 
 	private void consomeTokens(List<Conexao> conexoes) {
-		conexoes.stream().filter(it -> it.getTipoConexao() == CONSUMO).forEach(it -> it.getlugar().removeTokens(it.getPeso()));
+		conexoes.stream().filter(it -> it.getTipoConexao() == TipoConexaoEnum.CONSUMO).forEach(it -> it.getlugar().removeTokens(it.getPeso()));
 	}
 
 	private void geraTokens(List<Conexao> conexoes) {
-		conexoes.stream().filter(it -> it.getTipoConexao() == GERACAO).forEach(it -> it.getlugar().adicionaTokens(it.getPeso()));
+		conexoes.stream().filter(it -> it.getTipoConexao() == TipoConexaoEnum.GERACAO).forEach(it -> it.getlugar().adicionaTokens(it.getPeso()));
 	}
 
 	private boolean todasConexoesDeConsumoPossuemOsTokensNecessarios(List<Conexao> conexoes) {
-		return conexoes.stream().filter(it -> it.getTipoConexao() == CONSUMO).allMatch(it -> it.getPeso() <= it.getOrigem().getTokens());
+		return conexoes.stream().filter(it -> it.getTipoConexao() == TipoConexaoEnum.CONSUMO).allMatch(it -> it.getPeso() <= it.getOrigem().getTokens());
 	}
 
 	public String executaCiclo() {
@@ -145,4 +147,11 @@ public class RedePetry {
 		return resultado;
 	}
 
+	public List<Lugar> buscaLugaresEmOrdemAlfabetica() {
+		return lugares.stream().sorted(Comparator.comparing(Lugar::getId)).collect(Collectors.toList());
+	}
+
+	public List<Transicao> buscaTransicaoEmOrdemAlfabetica() {
+		return transicoes.stream().sorted(Comparator.comparing(Transicao::getId)).collect(Collectors.toList());
+	}
 }
