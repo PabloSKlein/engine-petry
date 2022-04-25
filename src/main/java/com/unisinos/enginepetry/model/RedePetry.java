@@ -12,35 +12,33 @@ public class RedePetry {
 	private final List<Transicao> transicoes = new ArrayList<>();
 	private StringBuilder log;
 
-	public RedePetry() {
-		log = new StringBuilder();
-		String lugares = "";
-		for (Lugar lugar : buscaLugaresEmOrdemAlfabetica()) {
-			lugares += lugar.getId() + " \t";
-		}
-		String trans = "";
-		for (Transicao tran : buscaTransicaoEmOrdemAlfabetica()) {
-			trans += tran.getId() + " \t";
-		}
-		this.log.append(cicloAtual + "\t" + lugares + trans + "\n");
-	}
-
 	public StringBuilder getLog() {
+		if (this.log == null) {
+			log = new StringBuilder();
+			String lugares = "";
+			for (Lugar lugar : buscaLugaresEmOrdemAlfabetica()) {
+				lugares += lugar.getId() + " \t";
+			}
+			String trans = "";
+			for (Transicao tran : buscaTransicaoEmOrdemAlfabetica()) {
+				trans += tran.getId() + " \t";
+			}
+			this.log.append("\t" + lugares + trans + "\n");
+		}
 		return log;
 	}
 
 	private void criarLinhaLog() {
-
 		String lugares = "";
 		for (Lugar lugar : buscaLugaresEmOrdemAlfabetica()) {
-			lugares += lugar.getTokens() + " \t";
+			lugares += (lugar.getTokens() == 0 ? "-" : lugar.getTokens()) + " \t";
 		}
 		String trans = "";
 		for (Transicao tran : buscaTransicaoEmOrdemAlfabetica()) {
 			boolean ativa = todasConexoesDeConsumoPossuemOsTokensNecessarios(tran.getConexoes());
-			trans += ativa + " \t";
+			trans += (ativa ? "S" : "N") + " \t";
 		}
-		this.log.append(cicloAtual + "\t" + lugares + trans + "\n");
+		getLog().append(cicloAtual + "\t" + lugares + trans + "\n");
 	}
 
 	public void adicionarLugar(Lugar lugar) {
