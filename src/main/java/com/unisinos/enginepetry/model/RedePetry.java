@@ -19,41 +19,41 @@ public class RedePetry {
 	private final List<Transicao> transicoes = new ArrayList<>();
 	JTextArea textArea;
 
-	private class MKeyListener extends KeyAdapter {
+//	private class MKeyListener extends KeyAdapter {
+//
+//		@Override
+//		public void keyPressed(KeyEvent event) {
+//			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+//				System.exit(0);
+//			}
+//
+//			if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+//
+//				executaCiclo();
+//				textArea.append("\n\n" + getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
+//			}
+//		}
+//	}
 
-		@Override
-		public void keyPressed(KeyEvent event) {
-			if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
-				System.exit(0);
-			}
-
-			if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-
-				executaCiclo();
-				textArea.append("\n\n" + getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
-			}
-		}
-	}
-
-	public void start() {
-		textArea = new JTextArea();
-
-		textArea.addKeyListener(new MKeyListener());
-		textArea.setEditable(false);
-
-		textArea.setText(getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
-
-		JFrame jframe = new JFrame();
-
-		jframe.add(textArea);
-
-		jframe.setSize(800, 600);
-		jframe.revalidate();
-		jframe.repaint();
-
-		jframe.setVisible(true);
-
-	}
+//	public void start() {
+//		textArea = new JTextArea();
+//
+//		textArea.addKeyListener(new MKeyListener());
+//		textArea.setEditable(false);
+//
+//		textArea.setText(getRedeString() + "\n\n ENTER : Novo Ciclo \n ESC : Sair");
+//
+//		JFrame jframe = new JFrame();
+//
+//		jframe.add(textArea);
+//
+//		jframe.setSize(800, 600);
+//		jframe.revalidate();
+//		jframe.repaint();
+//
+//		jframe.setVisible(true);
+//
+//	}
 
 	public void adicionarLugar(Lugar lugar) {
 		if (buscaLugar(lugar.getId()) != null) {
