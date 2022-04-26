@@ -17,6 +17,11 @@ public class PetryAPI {
 		return EnginePetryApplication.rede.executaCiclo();
 	}
 
+	@GetMapping(path = "/atual", produces = MediaType.TEXT_PLAIN_VALUE)
+	public String atual() {
+		return EnginePetryApplication.rede.getLog().toString();
+	}
+	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping(path = "/lugar/{idLugar}/token")
 	public void insereToken(@PathVariable String idLugar) {

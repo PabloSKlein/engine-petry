@@ -24,6 +24,7 @@ public class RedePetry {
 				trans += tran.getId() + " \t";
 			}
 			this.log.append("\t" + lugares + trans + "\n");
+			criarLinhaLog();
 		}
 		return log;
 	}

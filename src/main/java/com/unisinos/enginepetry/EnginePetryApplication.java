@@ -30,6 +30,7 @@ public class EnginePetryApplication {
 				if (atts[0].length() < 1) {
 					throw new RuntimeException();
 				}
+				System.out.println(line);
 				char val = atts[0].charAt(0);
 				switch (val) {
 				case 'L':
@@ -62,7 +63,7 @@ public class EnginePetryApplication {
 	}
 
 	public static void main(String[] args) {
-		rede = carregarRedeDeArquivo("C:\\_DEV\\_CCF\\enginepetry\\src\\main\\resources\\static\\RedePetry.txt");
+		rede = carregarRedeDeArquivo("C:\\_DEV\\_CCF\\enginepetry\\src\\main\\resources\\static\\RedePetry2.txt");
 		SpringApplication.run(EnginePetryApplication.class, args);
 	}
 
